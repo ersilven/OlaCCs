@@ -6,8 +6,16 @@ import Services from './components/Services';
 import Team from './components/Team';
 import Booking from './components/Booking';
 import Footer from './components/Footer';
+import AdminDashboard from './components/admin/AdminDashboard';
 
 function App() {
+  // Simple check for admin route
+  const isAdmin = window.location.pathname === '/admin';
+
+  if (isAdmin) {
+    return <AdminDashboard />;
+  }
+
   return (
     <div className="min-h-screen bg-stone-50">
       <Navbar />

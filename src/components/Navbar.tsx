@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Settings } from 'lucide-react';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,6 +23,13 @@ export default function Navbar() {
             <a href="#reservar" className="px-4 py-2 rounded-md bg-brand-brown text-white hover:bg-brand-dark transition-colors">
               Reservar Cita
             </a>
+            <a 
+              href="/admin"
+              className="text-brand-brown hover:text-brand-dark flex items-center"
+              title="Panel Administrativo"
+            >
+              <Settings className="h-5 w-5" />
+            </a>
           </div>
 
           <div className="md:hidden flex items-center">
@@ -40,6 +47,7 @@ export default function Navbar() {
             <a href="#servicios" className="block px-3 py-2 text-brand-brown hover:bg-brand-cream">Servicios</a>
             <a href="#equipo" className="block px-3 py-2 text-brand-brown hover:bg-brand-cream">Equipo</a>
             <a href="#reservar" className="block px-3 py-2 text-brand-brown hover:bg-brand-cream">Reservar Cita</a>
+            <a href="/admin" className="block px-3 py-2 text-brand-brown hover:bg-brand-cream">Panel Administrativo</a>
           </div>
         </div>
       )}

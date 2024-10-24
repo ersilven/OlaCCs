@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, Plus, Minus } from 'lucide-react';
+import React, { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { Calendar, Clock, Plus, Minus } from "lucide-react";
 
 interface Service {
   id: string;
@@ -16,34 +18,41 @@ interface Therapist {
 
 export default function Booking() {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
-  const [selectedTherapists, setSelectedTherapists] = useState<{[key: string]: string}>({});
+  const [selectedTherapists, setSelectedTherapists] = useState<{
+    [key: string]: string;
+  }>({});
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    date: '',
-    time: ''
+    name: "",
+    email: "",
+    phone: "",
+    date: new Date(),
+    time: "",
   });
+  const handleDateChange = (date: Date) => {
+    setFormData({ ...formData, date });
+  };
 
-  // Generate available time slots
   const generateTimeSlots = () => {
     const slots = [];
     for (let hour = 8; hour <= 17; hour++) {
-      const timeString = `${hour.toString().padStart(2, '0')}:00`;
+      const timeString = `${hour.toString().padStart(2, "0")}:00`;
       slots.push(timeString);
     }
     return slots;
   };
 
   const handleAddService = () => {
-    setSelectedServices([...selectedServices, '']);
-    setSelectedTherapists({ ...selectedTherapists, ['service-' + selectedServices.length]: '' });
+    setSelectedServices([...selectedServices, ""]);
+    setSelectedTherapists({
+      ...selectedTherapists,
+      ["service-" + selectedServices.length]: "",
+    });
   };
 
   const handleRemoveService = (index: number) => {
     const newServices = selectedServices.filter((_, i) => i !== index);
     const newTherapists = { ...selectedTherapists };
-    delete newTherapists['service-' + index];
+    delete newTherapists["service-" + index];
     setSelectedServices(newServices);
     setSelectedTherapists(newTherapists);
   };
@@ -51,28 +60,39 @@ export default function Booking() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const bookingData = {
+      id: Date.now().toString(),
       ...formData,
       services: selectedServices.map((serviceId, index) => ({
         serviceId,
-        therapistId: selectedTherapists['service-' + index]
-      }))
+        therapistId: selectedTherapists["service-" + index],
+      })),
     };
-    
+
     try {
-      // Here you would send the data to your backend
-      console.log('Booking data:', bookingData);
-      // Reset form after successful submission
+      // Store in localStorage
+      const existingBookings = JSON.parse(
+        localStorage.getItem("bookings") || "[]"
+      );
+      localStorage.setItem(
+        "bookings",
+        JSON.stringify([...existingBookings, bookingData])
+      );
+
+      // Reset form
       setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        date: '',
-        time: ''
+        name: "",
+        email: "",
+        phone: "",
+        date: "",
+        time: "",
       });
       setSelectedServices([]);
       setSelectedTherapists({});
+
+      alert("Reserva confirmada exitosamente");
     } catch (error) {
-      console.error('Error booking appointment:', error);
+      console.error("Error booking appointment:", error);
+      alert("Error al procesar la reserva");
     }
   };
 
@@ -80,15 +100,19 @@ export default function Booking() {
     <section id="reservar" className="py-24 bg-brand-light">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-serif text-brand-brown mb-4">Reserva tu Cita</h2>
+          <h2 className="text-3xl font-serif text-brand-brown mb-4">
+            Reserva tu Cita
+          </h2>
           <p className="text-lg text-brand-dark/80">
             Personaliza tu experiencia de bienestar
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm p-8">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white rounded-lg shadow-sm p-8"
+        >
           <div className="grid grid-cols-1 gap-6">
-            {/* Personal Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-brand-dark mb-2">
@@ -99,7 +123,9 @@ export default function Booking() {
                   required
                   value={formData.name}
                   className="w-full px-4 py-2 border border-brand-cream rounded-md focus:ring-2 focus:ring-brand-brown focus:border-transparent"
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                 />
               </div>
 
@@ -112,7 +138,9 @@ export default function Booking() {
                   required
                   value={formData.email}
                   className="w-full px-4 py-2 border border-brand-cream rounded-md focus:ring-2 focus:ring-brand-brown focus:border-transparent"
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                 />
               </div>
 
@@ -125,15 +153,18 @@ export default function Booking() {
                   required
                   value={formData.phone}
                   className="w-full px-4 py-2 border border-brand-cream rounded-md focus:ring-2 focus:ring-brand-brown focus:border-transparent"
-                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
                 />
               </div>
             </div>
 
-            {/* Services Selection */}
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-serif text-brand-brown">Servicios</h3>
+                <h3 className="text-lg font-serif text-brand-brown">
+                  Servicios
+                </h3>
                 <button
                   type="button"
                   onClick={handleAddService}
@@ -145,7 +176,10 @@ export default function Booking() {
               </div>
 
               {selectedServices.map((serviceId, index) => (
-                <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-brand-cream rounded-md">
+                <div
+                  key={index}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-brand-cream rounded-md"
+                >
                   <div>
                     <label className="block text-sm font-medium text-brand-dark mb-2">
                       Servicio {index + 1}
@@ -175,12 +209,12 @@ export default function Booking() {
                       </label>
                       <select
                         required
-                        value={selectedTherapists['service-' + index] || ''}
+                        value={selectedTherapists["service-" + index] || ""}
                         className="w-full px-4 py-2 border border-brand-cream rounded-md focus:ring-2 focus:ring-brand-brown focus:border-transparent"
                         onChange={(e) => {
                           setSelectedTherapists({
                             ...selectedTherapists,
-                            ['service-' + index]: e.target.value
+                            ["service-" + index]: e.target.value,
                           });
                         }}
                       >
@@ -203,22 +237,19 @@ export default function Booking() {
               ))}
             </div>
 
-            {/* Date and Time Selection */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-brand-dark mb-2">
                   Fecha
                 </label>
                 <div className="relative">
-                  <input
-                    type="date"
-                    required
-                    value={formData.date}
-                    min={new Date().toISOString().split('T')[0]}
+                  <DatePicker
+                    selected={formData.date}
+                    onChange={handleDateChange}
+                    dateFormat="yyyy-MM-dd"
                     className="w-full px-4 py-2 border border-brand-cream rounded-md focus:ring-2 focus:ring-brand-brown focus:border-transparent"
-                    onChange={(e) => setFormData({...formData, date: e.target.value})}
                   />
-                  <Calendar className="absolute right-3 top-2.5 h-5 w-5 text-brand-brown/60" />
+                  {/* <Calendar className="absolute right-3 top-2.5 h-5 w-5 text-brand-brown/60" /> */}
                 </div>
               </div>
 
@@ -231,7 +262,9 @@ export default function Booking() {
                     required
                     value={formData.time}
                     className="w-full px-4 py-2 border border-brand-cream rounded-md focus:ring-2 focus:ring-brand-brown focus:border-transparent appearance-none"
-                    onChange={(e) => setFormData({...formData, time: e.target.value})}
+                    onChange={(e) =>
+                      setFormData({ ...formData, time: e.target.value })
+                    }
                   >
                     <option value="">Selecciona una hora</option>
                     {generateTimeSlots().map((time) => (
