@@ -47,7 +47,7 @@ export default function Navbar() {
             <a href="#servicios" className="block px-3 py-2 text-brand-brown hover:bg-brand-cream">Servicios</a>
             <a href="#equipo" className="block px-3 py-2 text-brand-brown hover:bg-brand-cream">Equipo</a>
             <a href="#reservar" className="block px-3 py-2 text-brand-brown hover:bg-brand-cream">Reservar Cita</a>
-            <a href="/admin" className="block px-3 py-2 text-brand-brown hover:bg-brand-cream">Panel Administrativo</a>
+            <a href="#admin" className="block px-3 py-2 text-brand-brown hover:bg-brand-cream">Panel Administrativo</a>
           </div>
         </div>
       )}
