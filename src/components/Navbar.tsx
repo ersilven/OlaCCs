@@ -24,7 +24,7 @@ export default function Navbar() {
               Reservar Cita
             </a>
             <a 
-              href="/admin"
+              href="./admin"
               className="text-brand-brown hover:text-brand-dark flex items-center"
               title="Panel Administrativo"
             >
